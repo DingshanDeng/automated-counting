@@ -228,6 +228,9 @@ CLAUDE.md
 CLAUDE.local.md
 .claude/
 
+# Personal weekly check-in notes (kept local)
+notes/weekly_checkins/
+
 # Datasets: download locally, never commit (keep an optional README describing sources)
 data/*
 !data/README.md
