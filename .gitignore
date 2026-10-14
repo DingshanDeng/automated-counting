@@ -228,12 +228,17 @@ CLAUDE.md
 CLAUDE.local.md
 .claude/
 
-# Personal weekly check-in notes (kept local)
-notes/weekly_checkins/
+# Personal local test setup (kept local; the shared repo holds only the team notebooks)
+notebooks_local/
+src/
+notes/
+splits/
+pyproject.toml
+environment.yml
+.env.example
 
 # Datasets: download locally, never commit (keep an optional README describing sources)
-data/*
-!data/README.md
+data/
 *.zip
 *.tar
 *.tar.gz
