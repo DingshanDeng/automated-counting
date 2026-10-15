@@ -19,9 +19,3 @@ One row per weekly check-in. Scope, data and KPIs are in [`project.md`](project.
 - **Scores:** total-count MAE (cells per image), ±10% accuracy, R², and seconds per image. For models that find cells, we also report precision and recall.
 - **Fair settings:** anything we tune is chosen on train (or valid), never on test.
 - **Two test levels:** the random split, and leave-one-session-out (train on 4 sessions, test on the 5th). The session alone predicts the count with R² ≈ 0.7, so a model has to beat that.
-
-## Open decisions
-
-- Which test is the headline result: leave-one-session-out or the random split?
-- Which extra datasets for dense or blurry images (synthetic blur set, CoNIC), and when?
-- Who owns which week's work?
