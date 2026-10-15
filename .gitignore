@@ -228,14 +228,9 @@ CLAUDE.md
 CLAUDE.local.md
 .claude/
 
-# Personal local test setup (kept local; the shared repo holds only the team notebooks)
+# Personal notebooks and notes (kept local, not shared with collaborators)
 notebooks_local/
-src/
-notes/
-splits/
-pyproject.toml
-environment.yml
-.env.example
+notes_local/
 
 # Datasets: download locally, never commit (keep an optional README describing sources)
 data/
@@ -265,3 +260,6 @@ outputs/
 Thumbs.db
 .idea/
 .vscode/
+
+# scientific coding skills
+skills/
