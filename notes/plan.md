@@ -6,10 +6,10 @@ One row per weekly check-in. Scope, data and KPIs are in [`project.md`](project.
 |---|---|---|---|
 | 1 | Scope, data sources, stakeholders, KPIs | [`project.md`](project.md) | ✅ Done |
 | 2 | EDA and preprocessing | [`01_eda_overview.ipynb`](../notebooks/01_eda_overview.ipynb), the shared split [`splits.csv`](../splits/splits.csv), [`data.md`](data.md) | ✅ Done |
-| 3 | Model architecture: baseline and deep learning | Detect, then count. Baseline: Cellpose-SAM used off the shelf. Deep-learning model: a YOLO detector trained on our boxes ([`baseline_explained.md`](baseline_explained.md)) | ✅ Done |
+| 3 | Model architecture: baseline and deep learning | Models numbered in the order we test them: B0/B1 references, B2/B3 Cellpose-SAM (default / tuned on train, the baseline), then B4 YOLO and B5 U-Net trained on our boxes ([`baseline_explained.md`](baseline_explained.md)) | ✅ Done |
 | 4 | Baseline performance | [`02_baseline_cellpose.ipynb`](../notebooks/02_baseline_cellpose.ipynb), [`baseline_results.md`](baseline_results.md) | ✅ First run |
-| 5 | Deep-learning model, iteration 1 | YOLO26n trained on Colab with default settings, scored like the baseline | Next |
-| 6 | Deep-learning model, iteration 2 | One change at a time: augmentation (blur, noise, colour), model size, leave-one-session-out | Planned |
+| 5 | Deep-learning model, iteration 1 | B4 YOLO26n trained on Colab with default settings, scored like the baseline | Next |
+| 6 | Deep-learning model, iteration 2 | B5 U-Net density map; YOLO improved one change at a time (augmentation, model size, leave-one-session-out) | Planned |
 | 7 | Final project | Clean repo, 1-page executive summary, 5-minute presentation | Planned |
 
 ## How we evaluate

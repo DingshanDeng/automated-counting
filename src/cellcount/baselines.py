@@ -1,4 +1,4 @@
-"""Reference baselines that predict counts without looking at the cells (plan.md B0, B1).
+"""Reference baselines that predict counts without looking at the cells (models B0, B1).
 
 Both take per-image frames with ``live_true, dead_true`` (and ``source`` for B1) and return the
 test frame with ``live_pred, dead_pred`` added.

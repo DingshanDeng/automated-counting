@@ -1,4 +1,4 @@
-"""YOLO Live/Dead detector (plan.md B7): export our split to YOLO format, train, predict, tune.
+"""YOLO Live/Dead detector (model B4): export our split to YOLO format, train, predict, tune.
 
 Ultralytics is imported inside the functions, so ``cellcount`` stays importable without it.
 """

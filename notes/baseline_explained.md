@@ -1,7 +1,7 @@
 # The Baseline Models, Explained from Scratch
 
 This guide is for readers with little or no deep-learning or coding background. It explains:
-- what each of our models (B0, B1, B4, and the planned B7) does
+- what each of our models does: B0–B3, tested so far, and B4 (YOLO) and B5 (U-Net), planned
 - why we tested each one
 - how to read the results
 
@@ -43,13 +43,13 @@ All 500 photos come from **5 imaging sessions** (5 runs at the microscope, 100 p
 
 The danger: a model could learn "pink background → about 70 cells" instead of actually counting. That works on our photos, but fails at another lab.
 
-So for models trained on our photos (such as YOLO) we also run a harder test, called **leave-one-session-out**:
+So we also run a harder test, called **leave-one-session-out**:
 1. Hide one whole session.
 2. Learn from the other four.
 3. Test on the hidden one.
 4. Repeat 5 times, so every session gets hidden once.
 
-This imitates "a photo from a microscope setup the model has never seen". We don't run it for the Cellpose baseline: Cellpose isn't trained on our photos, so it has nothing session-specific to learn.
+This imitates "a photo from a microscope setup the model has never seen". It matters most for models trained on our photos (YOLO, U-Net). For Cellpose, only its three settings are picked on the four visible sessions, so it has little session-specific to learn, but we run the test anyway.
 
 ### The scores, in plain words
 
@@ -63,36 +63,31 @@ This imitates "a photo from a microscope setup the model has never seen". We don
 | **Recall** | "Of the **real** cells, how many did the model find?" Low recall means it misses cells. | Higher is better |
 | **F1** | One number that combines precision and recall | Higher is better |
 
-**IoU** (overlap) decides whether a predicted box "found" a real cell. It measures how much the predicted box and the hand-drawn box overlap, from 0 (no overlap) to 1 (identical boxes). We usually count it as a match when IoU ≥ 0.5, meaning the boxes overlap by at least about half; we also report IoU ≥ 0.3 (see B4).
+**IoU** (overlap) decides whether a predicted box "found" a real cell. It measures how much the predicted box and the hand-drawn box overlap, from 0 (no overlap) to 1 (identical boxes). We usually count it as a match when IoU ≥ 0.5, meaning the boxes overlap by at least about half; we also report IoU ≥ 0.3 (see B3).
 
 > **Why both counting scores and finding scores?** A model could miss 5 cells and wrongly add 5 other things, and still get the total exactly right. Precision and recall catch that.
 
 ---
 
-## 3. Why are the models called B0, B1, B4, B7?
+## 3. Why are the models called B0 to B5?
 
-Our roadmap lists a **ladder** of eight possible baselines, B0 to B7, from the simplest to the most capable. Each rung answers the question: **how much does a smarter method actually add?**
+**The numbers follow the order in which we test the models.** Each step answers the question: **how much does the next, smarter method actually add?**
 
 | | Model | One-line idea | Deep learning? | Finds individual cells? | Status |
 |---|---|---|---|---|---|
-| **B0** | Average guess | Always guess the average count | No | No | ✅ Run |
-| **B1** | Session average | Guess the average count of that photo's session | No | No | ✅ Run |
-| B2 | Image statistics + formula | Predict the count from overall photo measurements (how "busy" or colourful it is) | No | No | Not run |
-| B3 | Classic image processing | Hand-written rules: darken the background, threshold, split touching blobs | No | Yes | Not run |
-| **B4** | Cellpose-SAM | A ready-made deep-learning "cell finder", used as downloaded | Yes (pre-trained) | Yes | ✅ Run, **our baseline** |
-| B5 | MedGemma, asked in words | Show the photo to a medical AI chatbot and ask "how many cells?" | Yes (pre-trained) | No | Not run |
-| B6 | MedSigLIP features + formula | A medical AI model describes the photo as numbers, and a simple formula turns those into a count | Partly (frozen pre-trained part plus a small learned part) | No | Not run |
-| **B7** | YOLO26n | A general object detector, taught on our boxes | Yes (trained on our data) | Yes | Planned: our deep-learning model, trained on Colab next |
+| **B0** | Average guess | Always guess the average count | No | No | ✅ Tested |
+| **B1** | Session average | Guess the average count of that photo's session | No | No | ✅ Tested |
+| **B2** | Cellpose-SAM, default settings | A ready-made deep-learning "cell finder", used exactly as downloaded | Yes (pre-trained) | Yes | ✅ Tested |
+| **B3** | Cellpose-SAM, settings tuned on train | The same cell finder, with its two post-processing settings and a minimum cell size picked on the training photos | Yes (pre-trained) | Yes | ✅ Tested, **our baseline** |
+| **B4** | YOLO26n | A general object detector, trained on our boxes | Yes (trained on our data) | Yes | Next, on Colab |
+| **B5** | U-Net | A network that turns the photo into a "cell density" map, which sums to the count | Yes (trained on our data) | Roughly (one blob per cell) | Planned |
 
-The ladder mixes two families of methods, which explains its order:
-- **Count-only methods** (B0, B1, B2, B5, B6) output just numbers. They can't show *which* cells they counted, so nobody can check their work.
-- **Methods that find cells** (B3, B4, B7) draw each cell. Their counts are tallies of what they found, which you can check against the picture.
-
-**Why we ran B0, B1 and B4 first:**
+**Why this order:**
 - B0 and B1 cost nothing and are needed to interpret everything else.
-- B4 is the "existing published model" the course asks for, so it is our **baseline**: every later model is compared against it.
+- B2 and B3 answer the course's "existing published model" question. B3 is our **baseline**: every later model is compared against it. B2 shows how much of B3's accuracy comes from adapting two settings.
+- B4 and B5 are the deep-learning models we train on our own labels, compared with B3 on the same tests.
 
-B7 (YOLO) is the deep-learning approach we plan to build on; it is trained on Colab next. B2, B3, B5 and B6 are explained in §4b below.
+Other methods we considered but have not tested are described in §4b, without numbers. If we test one, it gets the next free number.
 
 ---
 
@@ -130,11 +125,13 @@ It still never looks at the cells.
 
 ---
 
-### B4 · Cellpose-SAM: a ready-made cell finder (our baseline model)
+### B2 and B3 · Cellpose-SAM: a ready-made cell finder (our baseline model)
 
 **What is Cellpose?** A free, published program from a university research group. Its authors trained a deep-learning model on many thousands of microscope images of all kinds of cells. Its job is to **outline every cell** in a photo; this is called *segmentation*. We downloaded it and used it **as is**, without teaching it anything about our photos.
 
 > **"Pre-trained" / "off the shelf"** means someone else already did the expensive learning, and we just use the result. It's like buying a calculator instead of building one.
+
+**B2** is steps 1, 2 and 5 below, with Cellpose's own default settings. **B3** adds steps 3 and 4.
 
 **What we did, step by step:**
 1. **Download** the model: one file, about 1.2 GB, fetched automatically the first time.
@@ -143,13 +140,14 @@ It still never looks at the cells.
 4. **Throw away tiny specks.** Outlines smaller than 400 pixels are dust or debris, not cells. The 400 was also chosen on the training photos.
 5. **Count** the outlines that are left.
 
-**What "learns from our data" here:** only those three numbers (two settings and the minimum size), all picked using the **training photos only**. The model itself is unchanged. The validation and test photos played no part.
+**What "learns from our data" here (B3):** only those three numbers (two settings and the minimum size), all picked using the **training photos only**. The model itself is unchanged. The validation and test photos played no part.
 
-**Why it is our baseline:** it answers **"Can we just use an existing published tool, with no training?"** That's the comparison the course asks for, and an important question for a lab that doesn't want to label hundreds of photos. Any model we build has to beat it.
+**Why it is our baseline (B3):** it answers **"Can we just use an existing published tool, with no training?"** That's the comparison the course asks for, and an important question for a lab that doesn't want to label hundreds of photos. Any model we build has to beat it.
 
 **Result:**
-- **Normal test:** off by **5.6 cells** per photo (about 11%), within ±10% on **59%** of photos, R² **0.74**. That's better than both B0 and B1, without ever being trained on our cells. On average it neither over- nor undercounts (bias −0.6).
-- **With its normal settings:** off by **34.8 cells**. It finds only a third of the cells, so picking the settings matters a lot.
+- **B3, normal test:** off by **5.6 cells** per photo (about 11%), within ±10% on **59%** of photos, R² **0.74**. That's better than both B0 and B1, without ever being trained on our cells. On average it neither over- nor undercounts (bias −0.6).
+- **B3, hidden-session test:** off by **6.3 cells**, R² **0.58**. It loses a little, while B1 falls apart (off by 14.6), because B1 has no average for a session it hasn't seen.
+- **B2 (default settings):** off by **34.8 cells**. It finds only a third of the cells, so picking the settings matters a lot.
 - **Weakness:** it misses pale, faint cells. On the worst photos it finds only about 2/3 of the cells.
 - **Not a weakness here:** blurry photos. Its error barely changes with how sharp the photo is.
 - **Speed:** about 1.85 seconds per photo, because it's a very large model.
@@ -160,7 +158,7 @@ It still never looks at the cells.
 
 ---
 
-### B7 · YOLO26n: a general object detector, taught on our cells (planned deep-learning model)
+### B4 · YOLO26n: a general object detector, taught on our cells (next deep-learning model)
 
 **What is YOLO?** "You Only Look Once" is a popular family of **object detectors**: programs that look at a photo and draw a labelled box around each object they recognize. They're used in self-driving cars, phone cameras and security cameras. YOLO26 is the 2026 version from the company Ultralytics, and **"n" (nano)** is its smallest, fastest size.
 
@@ -189,15 +187,31 @@ It still never looks at the cells.
 
 **Why include it?** Deep learning on our own labels is the approach we plan to build on. YOLO learns from every one of the 26,715 hand-drawn boxes, and it is fast enough for real-time use. Starting from the standard, untuned recipe lets us measure each improvement we try next (more data variety, a bigger model, larger photos) one step at a time.
 
-**Status:** not run in this round. It is trained on Colab next and will be scored on the same total-count metrics as Cellpose, plus the hidden-session test. It has to beat Cellpose's 5.6 cells on the normal test.
+**Status:** not run in this round. It is trained on Colab next and will be scored on the same total-count metrics as Cellpose, plus the hidden-session test. It has to beat B3's 5.6 cells on the normal test.
 
 **Later extension:** YOLO can also label each box with a kind of cell (for example Live or Dead), which is how we would add viability later.
 
 ---
 
-## 4b. The other rungs (planned, not run yet)
+### B5 · U-Net: turn the photo into a density map (planned deep-learning model)
 
-### B2 · "Measure the whole photo, then use a formula"
+**What is a U-Net?** A neural network shaped like a "U". The first half shrinks the photo step by step to understand *what* is in it, and the second half grows it back to full size to say *where*. The output is a new image the same size as the photo. It was invented in 2015 for microscope images and is still the standard tool for them. Cellpose itself was originally built on a U-Net.
+
+**How it counts:** instead of drawing boxes, it learns to paint a **density map**: a soft blob at the centre of every cell, where each blob adds up to exactly 1. Summing the whole map gives the count. We can make these training maps directly from our boxes, by putting a small blob at each box centre.
+
+**Analogy:** instead of circling each person in a crowd photo, you shade where people are, and the total amount of shading is the head count.
+
+**Why include it?** It is the classic deep-learning method for **crowded, overlapping cells**, where boxes stop working because cells hide each other. Our photos are not crowded, but the other datasets we plan to use are (the synthetic blur set, CoNIC). It's also small and quick to train, and it learns from every cell, like YOLO.
+
+**What we expect:** similar to YOLO on our photos. It can't show neat, separate boxes to check by eye, but the density map still shows *where* it thinks cells are. It is trained from scratch or from a small pre-trained encoder, in minutes to an hour on a Colab GPU.
+
+**Status:** planned, after YOLO.
+
+---
+
+## 4b. Other methods we considered (not tested)
+
+### "Measure the whole photo, then use a formula"
 
 **What it would do:**
 1. For each photo, compute a few overall measurements without finding any cells. For example:
@@ -208,15 +222,15 @@ It still never looks at the cells.
 
 **Analogy:** estimating how crowded a stadium is from how loud it sounds, without counting heads.
 
-**Why it's on the ladder:** it shows how far you get **without ever locating a cell**. Our data exploration found that edge energy alone tracks the count very closely (correlation 0.90), so B2 might do surprisingly well on the normal test.
+**Why we considered it:** it shows how far you get **without ever locating a cell**. Our data exploration found that edge energy alone tracks the count very closely (correlation 0.90), so it might do surprisingly well on the normal test.
 
-**What we expect:** decent on the normal test, but fragile. A blurrier photo has fewer sharp edges, so the formula would say "fewer cells" even when the count is the same. The background colour also gives away the session, so B2 could pick up the same shortcut as B1. It learns from only 351 numbers, one per photo.
+**What we expect:** decent on the normal test, but fragile. A blurrier photo has fewer sharp edges, so the formula would say "fewer cells" even when the count is the same. The background colour also gives away the session, so it could pick up the same shortcut as B1. It learns from only 351 numbers, one per photo.
 
-**Why not run yet:** it isn't deep learning, which this week's check-in focuses on, and B1 already shows what a "don't look at cells" method can do. It's quick to add later if we want the full ladder.
+**Why not tested:** it isn't deep learning, and B1 already shows what a "don't look at cells" method can do. It's quick to add later if we want a fuller comparison.
 
 ---
 
-### B3 · Classic image processing (hand-written rules, no learning)
+### Classic image processing (hand-written rules, no learning)
 
 **What it would do,** in the steps a person programs explicitly:
 1. **Remove the background:** blur the photo heavily to get just the background tint, then subtract it, so cells stand out from an even background.
@@ -227,7 +241,7 @@ The only settings (blob size limits) would be chosen on the training photos. A "
 
 **Analogy:** giving someone a checklist ("dark round blob between 20 and 40 pixels = a cell") instead of letting them learn from examples.
 
-**Why it's on the ladder:** this is how cell counting was automated before deep learning. Tools like ImageJ and CellProfiler work this way. It is the classic **non-deep-learning baseline** the course mentions. If B3 were nearly as good as Cellpose or YOLO, the extra complexity of deep learning wouldn't be worth it.
+**Why we considered it:** this is how cell counting was automated before deep learning. Tools like ImageJ and CellProfiler work this way. It is the classic **non-deep-learning baseline** the course mentions. If it were nearly as good as Cellpose or YOLO, the extra complexity of deep learning wouldn't be worth it.
 
 **What we expect:**
 - It works on crisp, well-separated cells, which suits our data, since cells barely overlap.
@@ -235,11 +249,11 @@ The only settings (blob size limits) would be chosen on the training photos. A "
 - It probably counts faint cells the labellers skipped, so it over-counts.
 - Every new lab or microscope needs its settings re-adjusted by hand.
 
-**Why not run yet:** Cellpose (B4) already covers the "no training on our labels" case with a stronger cell finder. B3 is the natural addition if the report wants a non-deep-learning comparison.
+**Why not tested:** Cellpose (B2, B3) already covers the "no training on our labels" case with a stronger cell finder. This is the natural addition if the report wants a non-deep-learning comparison.
 
 ---
 
-### B5 · MedGemma: ask a medical AI chatbot
+### MedGemma: ask a medical AI chatbot
 
 **What is MedGemma?** A **vision-language model** from Google: an AI that can look at an image and answer questions about it in text, like ChatGPT with pictures. "Med" means it was further trained on medical images, such as X-rays, skin photos and pathology slides. The 4-billion-weight version can run on a strong laptop.
 
@@ -250,7 +264,7 @@ The only settings (blob size limits) would be chosen on the training photos. A "
 
 **Analogy:** asking a well-read medical student to glance at the slide and estimate, instead of counting carefully.
 
-**Why it's on the ladder:** it answers the question stakeholders will ask: **"Why build anything? Can't a big AI model just do it?"** Having the real number makes that answer convincing.
+**Why we considered it:** it answers the question stakeholders will ask: **"Why build anything? Can't a big AI model just do it?"** Having the real number makes that answer convincing.
 
 **What we expect: weak.**
 - Models like this are known to be unreliable at counting more than about 10 objects; our photos have 23–91.
@@ -258,11 +272,11 @@ The only settings (blob size limits) would be chosen on the training photos. A "
 - Its answers can change with the wording of the question.
 - It's also much slower and heavier than Cellpose or YOLO.
 
-**Why not run yet:** it needs a Hugging Face account and acceptance of Google's terms of use before download. It's a stretch goal in the plan (§5.5).
+**Why not tested:** it needs a Hugging Face account and acceptance of Google's terms of use before download. It's a stretch goal.
 
 ---
 
-### B6 · MedSigLIP features + a small formula
+### MedSigLIP features + a small formula
 
 **What is MedSigLIP?** The "eyes" part of MedGemma: an image model that turns any picture into a long list of numbers, called an **embedding** or **features**, summarizing what's in it. Similar pictures get similar lists.
 
@@ -273,27 +287,27 @@ The only settings (blob size limits) would be chosen on the training photos. A "
 
 **Analogy:** an art expert writes a detailed description of each photo, and you learn which words in the description go with high or low counts.
 
-**Why it's on the ladder:** it's the cheapest way to use a big pre-trained medical model *with* our data: training takes minutes, not hours. It shows whether general "medical image understanding" helps with counting.
+**Why we considered it:** it's the cheapest way to use a big pre-trained medical model *with* our data: training takes minutes, not hours. It shows whether general "medical image understanding" helps with counting.
 
 **What we expect:**
 - Probably good on the normal test, but at high risk of the **session shortcut**. A photo's overall description strongly reflects its background colour, so the formula could learn "this tint means about 70 cells", just like B1.
 - The hidden-session test is the real judge.
 - Like all count-only methods, it can't show which cells it counted, and it learns from just 351 numbers (one per photo), versus 26,715 boxes for YOLO.
 
-**Why not run yet:** the same Hugging Face access step as B5. It's part of the same stretch track (plan §5.5).
+**Why not tested:** the same Hugging Face access step as MedGemma. It's part of the same stretch track.
 
 ---
 
 ### Why "finds individual cells" matters so much for our data
 
-| | Count-only methods (B0, B1, B2, B5, B6) | Methods that find cells (B3, B4, B7) |
+| | Count-only methods (B0, B1; image statistics, MedGemma, MedSigLIP) | Methods that find cells (B2–B5; classic image processing) |
 |---|---|---|
-| **Learns from** | 1 number per photo, so **351 examples** | Every cell, so **26,715 examples** (for B7; Cellpose learned from other labs' cells) |
+| **Learns from** | 1 number per photo, so **351 examples** | Every cell, so **26,715 examples** (for B4 and B5; Cellpose learned from other labs' cells) |
 | **Can it cheat with the session?** | Easily: the overall look of the photo gives the session away | Harder: each cell has to be found |
 | **Can a person check its answer?** | No, it only outputs a number | Yes: look at the boxes on the photo |
 | **Works on a bigger or cropped photo?** | Not reliably: trained on one photo size | Yes: it just finds more or fewer cells |
 
-This is why both our baseline (B4, Cellpose) and our planned deep-learning model (B7, YOLO) find cells and then count them. The count-only rungs are there to show that choice was justified, not as serious candidates.
+This is why our baseline (B3, Cellpose) and our planned deep-learning models (B4 YOLO, B5 U-Net) all locate cells and then count them. The count-only methods are there to show that choice was justified, not as serious candidates.
 
 ---
 
@@ -303,15 +317,18 @@ This is why both our baseline (B4, Cellpose) and our planned deep-learning model
 |---|---|---|---|---|
 | B0 average | 12.7 | 24% | −0.01 | — |
 | B1 session average | 6.9 | 45% | 0.71 | — |
-| Cellpose with its normal settings | 34.8 | 9% | −6.21 | 1.85 s |
-| **B4 Cellpose (baseline; settings picked on training photos)** | **5.6** | **59%** | **0.74** | **1.85 s** |
-| B7 YOLO (trained on our cells) | next, on Colab | | | |
+| B2 Cellpose, default settings | 34.8 | 9% | −6.21 | 1.85 s |
+| **B3 Cellpose (baseline; settings picked on training photos)** | **5.6** | **59%** | **0.74** | **1.85 s** |
+| B4 YOLO (trained on our cells) | next, on Colab | | | |
+| B5 U-Net (trained on our cells) | planned | | | |
+
+On the hidden-session test, B3 is off by 6.3 cells (R² 0.58), while B0/B1 are off by 14.6.
 
 **The story the table tells:**
 1. **Guessing is not enough (B0).** Counts vary too much from photo to photo.
 2. **The session shortcut is strong but fake (B1).** It looks decent on the normal test without looking at a single cell, and it can't work on a new session. Any model has to beat it.
-3. **A ready-made tool gets you a good part of the way (B4)** with no labelling effort, once two settings are adapted to our photos. It misses faint cells and is slow.
-4. **Next: teach a detector on our own labels (B7).** The question is how much it beats Cellpose, especially on unseen sessions and on messier photos (blurry, differently stained, different microscopes).
+3. **A ready-made tool gets you a good part of the way (B3)** with no labelling effort, once two settings are adapted to our photos (B2 shows what happens without that). It misses faint cells and is slow.
+4. **Next: train models on our own labels (B4 YOLO, then B5 U-Net).** The question is how much it beats Cellpose, especially on unseen sessions and on messier photos (blurry, differently stained, different microscopes).
 
 ---
 
@@ -325,7 +342,7 @@ This is why both our baseline (B4, Cellpose) and our planned deep-learning model
 - **Error by session / count / sharpness (bar charts):** a tall bar means a big error for that group of photos. They show whether a model fails on particular sessions, on crowded photos, or on blurry photos.
 - **Error vs sharpness and count (scatter plots):** each dot is a test photo; above the zero line means overcounted, below means undercounted.
 - **Effect of the two settings (four photos side by side):** the same photo under Cellpose's normal settings, with each setting loosened alone, and with both loosened. Only with both loosened does it find nearly all the cells.
-- **Worst photos (image grids):** one grid for Cellpose with its normal settings (it finds almost only the dark-blue cells), one for the tuned baseline.
+- **Worst photos (image grids):** one grid for B2, Cellpose with its default settings (it finds almost only the dark-blue cells), and one for B3, the tuned baseline.
   - **Yellow boxes** are the human labels.
   - **Cyan boxes** are the cells Cellpose found.
   - A yellow box with no cyan box means a **missed cell**. A cyan box with no yellow box means an **extra** detection.
