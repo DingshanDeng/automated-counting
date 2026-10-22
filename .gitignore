@@ -263,3 +263,7 @@ Thumbs.db
 
 # scientific coding skills
 skills/
+
+*.jpg
+*.coco.json
+*roboflow.txt
