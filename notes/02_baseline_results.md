@@ -1,6 +1,8 @@
 # Baseline Results
 
-Week 4 of [`plan.md`](plan.md): how the baseline model performs. [`baseline_explained.md`](baseline_explained.md) is a plain-language walkthrough of every model and score on this page.
+> **Note 02** · Baseline (Cellpose-SAM) · Notebook: [`02_baseline_cellpose.ipynb`](../notebooks/02_baseline_cellpose.ipynb) · [All notes](README.md)
+
+Week 4 of [`plan.md`](plan.md): how the baseline model performs. [`02_baseline_explained.md`](02_baseline_explained.md) is a plain-language walkthrough of every model and score on this page.
 
 - **Run:** 2026-10-15 on an Apple M5 Pro laptop GPU (`mps`).
 - **Code:**

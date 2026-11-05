@@ -1,8 +1,10 @@
 # RGB and grayscale cell counting: results
 
+> **Note 03a** · RGB vs grayscale (YOLO26n) · Notebook: [`03a_rgb_grayscale.ipynb`](../notebooks/03a_rgb_grayscale.ipynb) · [All notes](README.md)
+
 Contributor: Ruiping Huang.
 
-Supplement to [03_cell_counting.ipynb](../notebooks/03_cell_counting.ipynb). The [03a experiment notebook](../notebooks/03a_rgb_grayscale.ipynb) contains the complete code and recorded outputs.
+Supplement to [03_initial_model_train.ipynb](../notebooks/03_initial_model_train.ipynb). The [03a experiment notebook](../notebooks/03a_rgb_grayscale.ipynb) contains the complete code and recorded outputs.
 
 RGB inputs produced lower count error in this seed-0 experiment: **MAE 1.173 cells/image**, compared with **1.587** for grayscale, on the same 75 held-out images. Grayscale increased MAE by 0.413 cells/image. This run does not support replacing RGB with grayscale under the tested protocol.
 
@@ -55,7 +57,7 @@ Prediction timing includes loading, model preprocessing, inference, and postproc
 
 The largest grayscale error was on `train_177`: reference 65, RGB 61, grayscale 56. These counts identify a case for qualitative inspection; they do not by themselves establish why cells were missed.
 
-The supplementary [source and image diagnostics](rgb_grayscale_diagnostics.md) include three selected reference/RGB/grayscale box comparisons, deterministic case-selection rules, and error summaries for all five acquisition sources. Grayscale has higher source-level count MAE in three sources and equal MAE in two. The largest gap is source `2022_12_7_3_A`: RGB 0.733 versus grayscale 1.933 cells/image. This descriptive result does not identify background color as the cause.
+The supplementary [source and image diagnostics](03a_rgb_grayscale_diagnostics.md) include three selected reference/RGB/grayscale box comparisons, deterministic case-selection rules, and error summaries for all five acquisition sources. Grayscale has higher source-level count MAE in three sources and equal MAE in two. The largest gap is source `2022_12_7_3_A`: RGB 0.733 versus grayscale 1.933 cells/image. This descriptive result does not identify background color as the cause.
 
 Supplementary CPU inference with the saved checkpoints and unchanged thresholds reproduced all 75 original counts in each arm. All decoded test-image hashes matched the formal-run inventory. Reference overlay boxes come from the local Version 1 COCO-derived cache; coordinate equality against the formal YOLO export has not been directly verified. Illustrative matching at IoU 0.50 showed an RGB-exact case with two unmatched references and two unmatched predictions, whose effects cancel in the total. These diagnostics do not replace the original evaluation or constitute a full test detection benchmark.
 
