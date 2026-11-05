@@ -6,9 +6,9 @@ This report presents a rigorous analysis of zero-shot domain generalization for 
 
 ## 1. Summary of Datasets & Quantitative Performance
 
-| Dataset | Status | Average Ground-Truth Count/Img | Precision | Recall | mAP50 | Count MAE | Count $R^2$ |
+| Dataset | Status | Average Ground-Truth Count/Img | Precision | Recall | mAP50 | Count MAE | Count R-squared |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Cell (Base)** | Trained | — | 0.963 | 0.982 | 0.991 | — | — |
+| **Cell (Base)** | Trained | 52.56| 0.963 | 0.982 | 0.991 | 1.173 | 0.9885|
 | **Blood Cells** | Evaluated (As-Is) | 13.08 | 0.154 | 0.178 | 0.061 | 12.11 | -6.09 |
 | **Tomatoes** | Evaluated (As-Is) | 5.47 | 0.010 | 0.057 | 0.001 | 5.29 | -1.34 |
 | **Eggs** | Evaluated (As-Is) | 2.73 | 0.000 | 0.000 | 0.000 | 2.73 | -8.04 |
