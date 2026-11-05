@@ -1,5 +1,7 @@
 # Data
 
+> **Note 00** · Data · Notebook: [`00_download_data.ipynb`](../notebooks/00_download_data.ipynb) · [All notes](README.md)
+
 Where the images come from, how to download them, and how they are split. Run [`notebooks/00_download_data.ipynb`](../notebooks/00_download_data.ipynb) to download them.
 
 ## Roboflow dataset

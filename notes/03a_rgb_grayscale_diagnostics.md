@@ -1,6 +1,8 @@
 # RGB and grayscale: source and image diagnostics
 
-Contributor: Ruiping Huang. See the [main results report](rgb_grayscale_results.md) and [experiment notebook](../notebooks/03a_rgb_grayscale.ipynb).
+> **Note 03a** · RGB vs grayscale (YOLO26n) · Notebook: [`03a_rgb_grayscale.ipynb`](../notebooks/03a_rgb_grayscale.ipynb) · [All notes](README.md)
+
+Contributor: Ruiping Huang. See the [main results report](03a_rgb_grayscale_results.md) and [experiment notebook](../notebooks/03a_rgb_grayscale.ipynb).
 
 This analysis describes the completed seed-0 experiment. It does not train a new model, select new thresholds, or replace the original test results.
 

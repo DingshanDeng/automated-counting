@@ -1,11 +1,13 @@
 # The Baseline Models, Explained from Scratch
 
+> **Note 02** · Baseline (Cellpose-SAM) · Notebook: [`02_baseline_cellpose.ipynb`](../notebooks/02_baseline_cellpose.ipynb) · [All notes](README.md)
+
 This guide is for readers with little or no deep-learning or coding background. It explains:
 - what each of our models does: B0–B3, tested so far, and B4 (YOLO) and B5 (U-Net), planned
 - why we tested each one
 - how to read the results
 
-The full numbers and figures are in [`baseline_results.md`](baseline_results.md). This page explains what they mean.
+The full numbers and figures are in [`02_baseline_results.md`](02_baseline_results.md). This page explains what they mean.
 
 ---
 
@@ -332,7 +334,7 @@ On the hidden-session test, B3 is off by 6.3 cells (R² 0.58), while B0/B1 are o
 
 ---
 
-## 6. How to read the figures in `baseline_results.md`
+## 6. How to read the figures in `02_baseline_results.md`
 
 - **Threshold grid (heat map):** each square is one combination of Cellpose's two settings (how cell-like a pixel must be, and how well-formed an outline must be), coloured by how far off the count was on the training photos. Darker is better. The top-left square is Cellpose's normal settings.
 - **Predicted vs true (scatter plots):**
