@@ -54,8 +54,9 @@ The question is how far "find round objects and count them" carries beyond micro
 
 The notebook is saved without its outputs, so this note describes the setup only. Running it on Colab needs the Roboflow workspace and project names as Colab secrets (`ROBOFLOW_WORKSPACE`, `ROBOFLOW_PROJECT_CELL`, `ROBOFLOW_PROJECT_BLOOD`, `ROBOFLOW_PROJECT_TOMATO`, `ROBOFLOW_PROJECT_EGG`).
 
-## Future exploration
+## Expanding the impact
 
-- **Score all of BBBC005.** Comparing the predicted counts with the true counts in the file names, across all 19,200 images, would give the count error by blur level (`F`) and by cell count (`C`).
-- **Tune the cut-off** for the new images. A lower confidence cut-off might recover some of the missed `w2` cells.
-- **Train on the new datasets.** Adding them to training would teach the model crowded, blurred and differently shaped cells.
+These first tests show that the counting approach is not tied to our dataset. To bring it to more labs and image types:
+- **Measure it on new data with known counts.** BBBC005's file names give the true count and blur level of all 19,200 images, so the count error could be measured across blur and density.
+- **Train on more kinds of images.** Adding datasets such as BBBC005 (crowded, blurred cells) or CoNIC (histology nuclei) to training would let one model count cells across microscopes, stains and cell shapes.
+- **Count cell types.** The same detector can label each box, for example Live vs Dead, which gives labs viability as well as the count.

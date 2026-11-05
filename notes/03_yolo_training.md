@@ -59,5 +59,5 @@ These are detection scores on Roboflow's validation folder. The count error on t
 **What this shows.**
 - **Colour, translate, scale and mosaic help box placement:** mAP50-95 rises from 0.575 to about 0.59–0.60. Colour changes also match what the EDA found: image colour shifts between sessions ([`01_eda.md`](01_eda.md)).
 - **Flips and rotation slightly hurt** in this screen (mAP50-95 0.54–0.55, F1 about 0.95).
-- **The differences are small.** F1 only ranges from 0.952 to 0.965, and each setting was run once (one seed) on half the data for 25 epochs, so differences of about 0.01 may be noise. Repeating the screen with several seeds on the full schedule is left for future exploration.
+- **The differences are small.** F1 only ranges from 0.952 to 0.965, and each setting was run once (one seed) on half the data for 25 epochs, so differences of about 0.01 may be noise.
 - The full model in notebook 03 uses Ultralytics' default augmentations (colour, translate, scale, left-right flip and mosaic), which are mostly the helpful ones here.

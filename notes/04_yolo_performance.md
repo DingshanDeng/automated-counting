@@ -45,13 +45,8 @@ The model and its training are described in [`03_yolo_training.md`](03_yolo_trai
 *The six test images with the largest count error. Yellow: labelled cells. Cyan / magenta: cells our model found as Live / Dead.*
 
 - **The worst images are off by only 4–6 cells.** Most of the differences are faint cells, which the annotators also labelled inconsistently. At this level the model is close to the noise in the labels themselves.
-- **Dead cells are the weak spot.** When it calls a cell Dead it is almost always right (precision 0.98), but it misses about a quarter of the Dead cells (recall 0.74; F1 0.85, vs 0.96 for Live). This matters only for the later Live/Dead extension, not for the total count.
+- **Dead cells are the weak spot.** When it calls a cell Dead it is almost always right (precision 0.98), but it misses about a quarter of the Dead cells (recall 0.74; F1 0.85, vs 0.96 for Live). This matters only when counting Live and Dead separately, not for the total count.
 
 ## Independent confirmation
 
 A separate run by a teammate ([`03a_rgb_grayscale_results.md`](03a_rgb_grayscale_results.md)) trained the same YOLO26n on the same 351 / 74 / 75 split, with its own code, a different augmentation setting and its own confidence cut-off. It reached **MAE 1.17** on the same 75 test images. Two independent runs both land far below the baseline's 5.6.
-
-## Future exploration
-
-- **Unseen sessions.** Our model is scored on the random split. Testing it on a session it has never seen (leave-one-session-out, as done for the baselines in note 02) is left for future exploration.
-- **Several training runs.** Each number comes from one training run. The two independent runs above (1.61 and 1.17) suggest that run-to-run variation is a few tenths of a cell, far smaller than the gap to the baseline.

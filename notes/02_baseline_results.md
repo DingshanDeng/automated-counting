@@ -233,7 +233,4 @@ These need no download. B0 predicts the training-set mean count for every image.
 
 Our own model, YOLO26n trained on our labels, beats this baseline: training in [`03_yolo_training.md`](03_yolo_training.md), results in [`04_yolo_performance.md`](04_yolo_performance.md).
 
-**Future exploration:**
-- **Fine-tune Cellpose-SAM on our data** (`cellpose.train.train_seg`). It needs a mask per cell, and we only have boxes, so the masks would come first: keep the Cellpose outlines that match a labelled box, or prompt SAM with each box.
-- **Stress tests:** add blur, noise and colour shifts to the test images, to measure robustness beyond our five sessions.
-- **Cell types:** tell Live from Dead here, or other kinds of cells in other datasets.
+Beyond this project, the same approach could also tell cell types apart (Live from Dead here, or other kinds of cells in other datasets).

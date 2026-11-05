@@ -221,7 +221,7 @@ The only settings (blob size limits) would be chosen on the training photos. A "
 - Its answers can change with the wording of the question.
 - It's also much slower and heavier than Cellpose.
 
-**Why not tested:** it needs a Hugging Face account and acceptance of Google's terms of use before download. We leave it for future exploration.
+**Why not tested:** it needs a Hugging Face account and acceptance of Google's terms of use before download, so it was not part of this project.
 
 ---
 
@@ -243,7 +243,7 @@ The only settings (blob size limits) would be chosen on the training photos. A "
 - The hidden-session test is the real judge.
 - Like all count-only methods, it can't show which cells it counted, and it learns from just 351 numbers (one per photo), versus 26,715 boxes for a model trained on every cell.
 
-**Why not tested:** the same Hugging Face access step as MedGemma. We leave it for future exploration too.
+**Why not tested:** the same Hugging Face access step as MedGemma, so it was not part of this project either.
 
 ---
 

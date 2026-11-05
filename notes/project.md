@@ -12,7 +12,7 @@ Counting cells in microscopy images is still mostly done by hand, which is slow 
 |---|---|---|
 | [Roboflow Cell Counting](https://universe.roboflow.com/cell-counting/cell-counting-zeqo5) | **In use** | 500 brightfield images (640×640) from 5 acquisition sessions, with 23–91 cells each, boxed as Live or Dead. See [`00_data.md`](00_data.md). |
 | Synthetic Cell Images and Masks (BBBC005) | Used in extra experiments ([`05_extra_experiments.md`](05_extra_experiments.md)) | 20,400 synthetic images at known blur levels, labelled with cell counts |
-| CoNIC | Future exploration | Histology nuclei: dense, crowded scenes |
+| CoNIC | Not used; a candidate for expanding the project | Histology nuclei: dense, crowded scenes |
 
 ## Stakeholders
 
