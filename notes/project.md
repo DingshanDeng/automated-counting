@@ -11,8 +11,8 @@ Counting cells in microscopy images is still mostly done by hand, which is slow 
 | Dataset | Status | Description |
 |---|---|---|
 | [Roboflow Cell Counting](https://universe.roboflow.com/cell-counting/cell-counting-zeqo5) | **In use** | 500 brightfield images (640×640) from 5 acquisition sessions, with 23–91 cells each, boxed as Live or Dead. See [`00_data.md`](00_data.md). |
-| Synthetic Cell Images and Masks | Planned | 20,400 synthetic images at known blur levels, labelled with cell counts |
-| CoNIC | Planned | Histology nuclei: dense, crowded scenes |
+| Synthetic Cell Images and Masks (BBBC005) | Used in extra experiments ([`05_extra_experiments.md`](05_extra_experiments.md)) | 20,400 synthetic images at known blur levels, labelled with cell counts |
+| CoNIC | Not used; a candidate for expanding the project | Histology nuclei: dense, crowded scenes |
 
 ## Stakeholders
 
@@ -21,10 +21,10 @@ Counting cells in microscopy images is still mostly done by hand, which is slow 
 
 ## KPIs
 
-| KPI | Measure | Baseline now (Cellpose-SAM, 75 test images) |
-|---|---|---|
-| Count accuracy | Mean absolute error in cells per image; share of images within ±10% | 5.6 cells; 59% |
-| R² | Variance in true counts that the predictions explain | 0.74 |
-| Compute | Seconds per image, compared with counting by hand (about 1 minute) | 1.85 s |
+| KPI | Measure | Baseline (Cellpose-SAM) | **Our model (YOLO26n)** |
+|---|---|---|---|
+| Count accuracy | Mean absolute error in cells per image; share of images within ±10% | 5.6 cells; 59% | **1.6 cells; 96%** |
+| R² | Variance in true counts that the predictions explain | 0.74 | **0.98** |
+| Compute | Seconds per image, compared with counting by hand (about 1 minute) | 1.85 s | **0.02 s** |
 
-Details: [`02_baseline_results.md`](02_baseline_results.md). Roadmap: [`plan.md`](plan.md).
+All on the same 75 test images. Details: [`02_baseline_results.md`](02_baseline_results.md), [`04_yolo_performance.md`](04_yolo_performance.md). Roadmap: [`plan.md`](plan.md).
