@@ -1,6 +1,6 @@
 # Cross-Domain Evaluation & Dataset Summary Report
 
-This report presents a rigorous analysis of zero-shot domain generalization for a YOLOv8 nano model trained on microscopic cell structures and evaluated **as-is (without fine-tuning)** on Blood Cells, Tomatoes, and Eggs.
+This report presents a rigorous analysis of zero-shot domain generalization for a YOLO26 model trained on our roboflow cell detection data and evaluated **as-is (without fine-tuning)** on Blood Cells, Tomatoes, and Eggs.
 
 ---
 
