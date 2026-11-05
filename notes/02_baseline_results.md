@@ -22,8 +22,6 @@ Week 4 of [`plan.md`](plan.md): how the baseline model performs. [`02_baseline_e
 | B0, B1 | Sanity references | B0 predicts the training-set mean count. B1 predicts the mean count of the image's session. | Counts only |
 | B2 Cellpose-SAM, default settings | Published model as shipped | A published cell-segmentation model (`cpsam_v2`) used **as downloaded**: its network is never trained on our images. It outlines every cell, and we count the outlines. | No |
 | **B3 Cellpose-SAM, tuned on train** | **Baseline model.** Later models are measured against it. | The same model, with its two post-processing thresholds and a minimum cell area chosen on the training images | Only to choose those three numbers |
-| B4 YOLO26n | Next deep-learning model (not run in this round) | A published object detector, trained on our boxes on Colab | Yes: our boxes |
-| B5 U-Net | Planned deep-learning model | A density-map network trained on our box centres | Yes: our boxes |
 
 Models are numbered in the order we test them.
 
@@ -231,10 +229,11 @@ These need no download. B0 predicts the training-set mean count for every image.
 - The same code (`metrics.total_count_metrics`) scores every model, per image.
 - For precision and recall, each predicted box is matched to at most one labelled box with IoU at or above the cut-off.
 
-## 7. Next steps
+## 7. What comes after the baseline
 
-1. **Train B4, the YOLO26n detector, on Colab.** Score it on the same total-count metrics, on the random split and on leave-one-session-out.
-2. **Train B5, a U-Net density-map model,** on density maps made from our box centres. Score it the same way.
-3. **Later: fine-tune Cellpose-SAM on our data:** add our training images to its training set with `cellpose.train.train_seg`. It needs a mask per cell and we only have boxes, so the masks come first: keep the Cellpose outlines that match a labelled box, or prompt SAM with each box. Compare against this baseline on the same splits.
-4. **Stress tests:** add blur, noise and colour shifts to the test images to measure robustness beyond our five sessions.
-5. **Later extension:** tell cell types apart (Live/Dead here, other kinds of cells in other datasets).
+Our own model, YOLO26n trained on our labels, beats this baseline: training in [`03_yolo_training.md`](03_yolo_training.md), results in [`04_yolo_performance.md`](04_yolo_performance.md).
+
+**Future exploration:**
+- **Fine-tune Cellpose-SAM on our data** (`cellpose.train.train_seg`). It needs a mask per cell, and we only have boxes, so the masks would come first: keep the Cellpose outlines that match a labelled box, or prompt SAM with each box.
+- **Stress tests:** add blur, noise and colour shifts to the test images, to measure robustness beyond our five sessions.
+- **Cell types:** tell Live from Dead here, or other kinds of cells in other datasets.

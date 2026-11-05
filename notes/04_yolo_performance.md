@@ -1,0 +1,57 @@
+# Our Model vs the Baseline
+
+> **Note 04** · YOLO26n performance · Notebook: [`04_yolo_performance.ipynb`](../notebooks/04_yolo_performance.ipynb) · [All notes](README.md)
+
+**Our YOLO26n model counts cells about 3.5 times more accurately than the baseline, and about 90 times faster.** On the 75 test images it is off by 1.6 cells per image on average, against 5.6 for the baseline (tuned Cellpose-SAM, B3), and 96% of its counts are within ±10% of the true count.
+
+The model and its training are described in [`03_yolo_training.md`](03_yolo_training.md), and the baselines in [`02_baseline_results.md`](02_baseline_results.md).
+
+## How it was tested
+
+- **Same test as the baselines:** the 75 test images of the shared [`splits.csv`](../splits/splits.csv), scored with the same code (`cellcount.metrics`) as notebook 02. The B3 numbers are read from notebook 02's results file.
+- **Model:** YOLO26n fine-tuned on the 351 training images of the shared split, 100 epochs at 640 px, default Ultralytics settings (`cellcount.yolo.train`).
+- **Confidence cut-off:** a box counts as a cell if the model's confidence is at least **0.63**. This value was chosen to minimize the count error on the 74 **validation** images, so the test images played no part in any choice.
+- **Run:** trained on an Apple M5 Pro (`mps`). Re-running the notebook with the saved weights reproduces every number below exactly.
+
+## Results (random-split test, 75 images)
+
+| Model | Count error (MAE, cells / image) | Bias | Within ±10% | R² | Time per image |
+|---|---|---|---|---|---|
+| B0 training mean | 12.7 | +1.1 | 24% | −0.01 | — |
+| B1 session mean | 6.9 | +1.7 | 45% | 0.71 | — |
+| B3 Cellpose-SAM, tuned on train (**baseline**) | 5.6 | −0.6 | 59% | 0.74 | 1.85 s |
+| **YOLO26n (ours)** | **1.6** | **−0.04** | **96%** | **0.98** | **0.02 s** |
+
+![Count error: our model vs the baseline](figures/yolo_performance/00_mae_vs_baseline.png)
+
+**What the numbers mean.**
+- **Count error:** our model is off by 1.6 cells per image, about 3% of a typical image's 53 cells. The baseline is off by 5.6 cells (about 11%).
+- **No systematic over- or undercounting:** the bias is −0.04 cells.
+- **Speed:** 0.02 s per image, against 1.85 s for Cellpose-SAM. Both were timed on the M5 Pro. Counting by hand takes a minute or more per image.
+- **Finding cells:** precision 0.95 and recall 0.95 at IoU ≥ 0.5, against about 0.65 for both with Cellpose-SAM. Our boxes match the hand-drawn ones much more closely.
+
+![Predicted vs true count](figures/yolo_performance/01_pred_vs_true.png)
+
+*Top row: predicted vs true total count, one dot per test image, coloured by session. B0 is a flat line and B1 makes one step per session, but our model sits on the diagonal for every session. Bottom row: the same for Dead cells only.*
+
+![Error by session and by count](figures/yolo_performance/02_mae_by_session_and_count.png)
+
+*Count error by session (left) and by number of cells in the image (right). Our model's error stays between 1 and 2.6 cells in every session and every count range, so it doesn't depend on a particular session or on crowding.*
+
+## Where it still makes mistakes
+
+![Worst test images](figures/yolo_performance/04_worst_yolo.png)
+
+*The six test images with the largest count error. Yellow: labelled cells. Cyan / magenta: cells our model found as Live / Dead.*
+
+- **The worst images are off by only 4–6 cells.** Most of the differences are faint cells, which the annotators also labelled inconsistently. At this level the model is close to the noise in the labels themselves.
+- **Dead cells are the weak spot.** When it calls a cell Dead it is almost always right (precision 0.98), but it misses about a quarter of the Dead cells (recall 0.74; F1 0.85, vs 0.96 for Live). This matters only for the later Live/Dead extension, not for the total count.
+
+## Independent confirmation
+
+A separate run by a teammate ([`03a_rgb_grayscale_results.md`](03a_rgb_grayscale_results.md)) trained the same YOLO26n on the same 351 / 74 / 75 split, with its own code, a different augmentation setting and its own confidence cut-off. It reached **MAE 1.17** on the same 75 test images. Two independent runs both land far below the baseline's 5.6.
+
+## Future exploration
+
+- **Unseen sessions.** Our model is scored on the random split. Testing it on a session it has never seen (leave-one-session-out, as done for the baselines in note 02) is left for future exploration.
+- **Several training runs.** Each number comes from one training run. The two independent runs above (1.61 and 1.17) suggest that run-to-run variation is a few tenths of a cell, far smaller than the gap to the baseline.
