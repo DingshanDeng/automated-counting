@@ -2,7 +2,7 @@
 
 > **Note 04** · YOLO26n performance · Notebook: [`04_yolo_performance.ipynb`](../notebooks/04_yolo_performance.ipynb) · [All notes](README.md)
 
-**Our YOLO26n model counts cells about 3.5 times more accurately than the baseline, and about 90 times faster.** On the 75 test images it is off by 1.6 cells per image on average, against 5.6 for the baseline (tuned Cellpose-SAM, B3), and 96% of its counts are within ±10% of the true count.
+**Our YOLO26n model counts cells about 3.5 times more accurately than the baseline, and about 63 times faster.** On the 75 test images it is off by 1.6 cells per image on average, against 5.6 for the baseline (tuned Cellpose-SAM, B3), and 96% of its counts are within ±10% of the true count.
 
 The model and its training are described in [`03_yolo_training.md`](03_yolo_training.md), and the baselines in [`02_baseline_results.md`](02_baseline_results.md).
 
