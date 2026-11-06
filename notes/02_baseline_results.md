@@ -15,7 +15,7 @@ Week 4 of [`plan.md`](plan.md): how the baseline model performs. [`02_baseline_e
 
 ## Task and baseline
 
-**Task: the total number of cells in an image.** We count cells without telling Live from Dead, because most other cell datasets (the synthetic blur set, CoNIC) have no viability labels. Telling cell types apart (Live vs Dead here, or several kinds of cells in other datasets) is a later extension of the project. The colour rule for Live/Dead is kept in `cellpose_zs.py` for that.
+**Task: the total number of cells in an image.** We count cells without telling Live from Dead, because most other cell datasets (the synthetic blur set, CoNIC) have no viability labels. Counting Live and Dead separately is outside this project's scope. The colour rule for Live/Dead is kept in `cellpose_zs.py`.
 
 | | Role | What it is | Uses our labels? |
 |---|---|---|---|

@@ -17,7 +17,7 @@ Each image is a 640 × 640 pixel microscope photo, about 54 cells on average, fr
 
 **Goal (for now):** given a new photo, say how many **cells** it contains in total.
 
-Labs also care about how many are live and how many dead, which gives **viability**, the percentage of cells that are alive. We leave that for later. Most other cell datasets we want to use don't mark cells as live or dead, so we first solve plain counting. Telling kinds of cells apart (Live vs Dead here, or several kinds of cells in other datasets) is a later extension of the project.
+Labs also care about how many are live and how many dead, which gives **viability**, the percentage of cells that are alive. Counting Live and Dead separately is outside this project's scope: most other cell datasets don't mark cells as live or dead, so we solve plain counting.
 
 Today a person counts the cells by eye, which is slow and varies from person to person. We want a computer to do it.
 
